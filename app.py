@@ -2,7 +2,7 @@ import streamlit as st
 from granite_api import call_granite
 
 st.set_page_config(page_title="Business Chatbot", page_icon="🤖")
-st.title("🤖 Business AI Chatbot (IBM Granite)")
+st.title("🤖 ManuChai (IBM Granite)")
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
