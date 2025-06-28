@@ -1,4 +1,4 @@
-# IBM_Hackathon
+# ManuChai
 Develop an AI Bot to deal with large industrial product procurement.
 # Business Chatbot (IBM Granite + Streamlit)
 
