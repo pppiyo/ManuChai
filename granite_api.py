@@ -7,7 +7,7 @@ MODEL_ID = "granite-13b-chat"
 
 def call_granite(prompt: str) -> str:
     payload = {
-        "model_id": MODEL_ID, 
+        "model_id": MODEL_ID,
         "input": prompt
     }
 
