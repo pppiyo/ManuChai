@@ -5,6 +5,53 @@ import os
 from datetime import datetime
 from granite_api import call_granite
 
+def save_to_order_history(data):
+    """
+    Save JSON data to order_history.json file by appending to existing array.
+    
+    Args:
+        data: The data to save (dict, list, or any JSON-serializable object)
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    filename = "order_history.json"
+    existing_data = []
+    
+    try:
+        # Read existing data if file exists
+        if os.path.exists(filename):
+            try:
+                with open(filename, 'r', encoding='utf-8') as f:
+                    file_content = f.read().strip()
+                    if file_content:  # Check if file is not empty
+                        existing_data = json.loads(file_content)
+                    else:
+                        existing_data = []
+            except json.JSONDecodeError:
+                # If file is corrupted, start fresh
+                existing_data = []
+        
+        # Add timestamp to the data
+        data_with_timestamp = {
+            "timestamp": datetime.now().isoformat(),
+            "data": data
+        }
+        
+        # Append new data to existing array
+        existing_data.append(data_with_timestamp)
+        
+        # Write back to file
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(existing_data, f, indent=2, ensure_ascii=False)
+        
+        return True
+        
+    except Exception as e:
+        st.error(f"Error saving to order history: {str(e)}")
+        return False
+
+
 # Set page config
 st.set_page_config(page_title="ManuChai", page_icon="🤖")
 st.title("🤖 ManuChai (IBM Granite Chatbot)")
@@ -62,9 +109,6 @@ if submitted:
         "Product Price": f"${product_price:.2f}",
         "Shipment Price": f"${shipment_price:.2f}",
         "Total Cost": f"${total_cost:.2f}"
-        # "Product Price": -1,
-        # "Shipment Price": -1,
-        # "Total Cost": -1
     }
 
     # Save to chat history
@@ -84,52 +128,4 @@ for speaker, msg in st.session_state.chat_history:
     elif speaker == "Table":
         df = pd.DataFrame([msg])
         st.table(df)
-
-def save_to_order_history(data):
-    """
-    Save JSON data to order_history.json file by appending to existing array.
-    
-    Args:
-        data: The data to save (dict, list, or any JSON-serializable object)
-    
-    Returns:
-        bool: True if successful, False otherwise
-    """
-    filename = "order_history.json"
-    
-    try:
-        # Read existing data if file exists
-        existing_data = []
-        if os.path.exists(filename):
-            try:
-                with open(filename, 'r', encoding='utf-8') as f:
-                    file_content = f.read().strip()
-                    if file_content:  # Check if file is not empty
-                        existing_data = json.load(f)
-                    else:
-                        existing_data = []
-            except json.JSONDecodeError:
-                # If file is corrupted, start fresh
-                existing_data = []
-        
-        # Add timestamp to the data
-        data_with_timestamp = {
-            "timestamp": datetime.now().isoformat(),
-            "data": data
-        }
-        
-        # Append new data to existing array
-        existing_data.append(data_with_timestamp)
-        
-        # Write back to file
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(existing_data, f, indent=2, ensure_ascii=False)
-        
-        return True
-        
-    except Exception as e:
-        st.error(f"Error saving to order history: {str(e)}")
-        return False
-
-
-                
+               

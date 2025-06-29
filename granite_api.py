@@ -3,53 +3,24 @@ import os
 import requests
 import pandas as pd
 
-API_KEY = os.getenv("IBM_CLOUD_APIKEY", "eyJraWQiOiIyMDE5MDcyNCIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJJQk1pZC02OTQwMDBaRFpFIiwiaWQiOiJJQk1pZC02OTQwMDBaRFpFIiwicmVhbG1pZCI6IklCTWlkIiwianRpIjoiYTY4NDk5ZTEtYzA0NC00YWNkLWE2N2EtNjUxOGVmODUxN2EzIiwiaWRlbnRpZmllciI6IjY5NDAwMFpEWkUiLCJnaXZlbl9uYW1lIjoiWXV5aW5nIiwiZmFtaWx5X25hbWUiOiJMdSIsIm5hbWUiOiJZdXlpbmcgTHUiLCJlbWFpbCI6Inl1eWluZ2x1QHVzYy5lZHUiLCJzdWIiOiJ5dXlpbmdsdUB1c2MuZWR1IiwiYXV0aG4iOnsic3ViIjoieXV5aW5nbHVAdXNjLmVkdSIsImlhbV9pZCI6IklCTWlkLTY5NDAwMFpEWkUiLCJuYW1lIjoiWXV5aW5nIEx1IiwiZ2l2ZW5fbmFtZSI6Ill1eWluZyIsImZhbWlseV9uYW1lIjoiTHUiLCJlbWFpbCI6Inl1eWluZ2x1QHVzYy5lZHUifSwiYWNjb3VudCI6eyJ2YWxpZCI6dHJ1ZSwiYnNzIjoiY2E1NmQwNWY4NmI5NGY2YzgwNmVjYzY5MmZhODI3N2EiLCJpbXNfdXNlcl9pZCI6IjEzOTQzNDM3IiwiZnJvemVuIjp0cnVlLCJpbXMiOiIyOTk5NzcwIn0sIm1mYSI6eyJpbXMiOnRydWV9LCJpYXQiOjE3NTExODc2MTYsImV4cCI6MTc1MTE5MTIxNiwiaXNzIjoiaHR0cHM6Ly9pYW0uY2xvdWQuaWJtLmNvbS9pZGVudGl0eSIsImdyYW50X3R5cGUiOiJ1cm46aWJtOnBhcmFtczpvYXV0aDpncmFudC10eXBlOmFwaWtleSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImRlZmF1bHQiLCJhY3IiOjEsImFtciI6WyJwd2QiXX0.LEUcm5dZRT6wFx4BgGlWKKUwSrA96n2HdWKgeEPyyeGuIF2LETauDsESenOoXrkzzl_5vx1JBmkoiFSDseJlZaiZjzkCgoPepbHxN1hYLXpDcWSciWaDzLXRwPRABuztRjwFEGtZiTlkGnSXbmuWDiUSfKuHUaI61CGUvVpcuU93BKBTqcGvoScl9h01oeIj47bc13JhmbE4kD4qDguNaQ8StS4oSIhtK-f-Kt2MPkpzs21icaabZofNWzaF62DgFBbfwPZL3qJPp_hKhH5o-bKX5DRCb6z7YrZ1Y4dkwuLh6PepN0Xno9uXEDLtDIp_xGAobQJ0HkF-iPbxcVKuGQ")
+API_KEY = os.getenv("IBM_CLOUD_APIKEY", "eyJraWQiOiIyMDE5MDcyNCIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJJQk1pZC02OTEwMDBaRVBRIiwiaWQiOiJJQk1pZC02OTEwMDBaRVBRIiwicmVhbG1pZCI6IklCTWlkIiwianRpIjoiMzIyNzgwYjEtYjAxMi00ODJlLWIxY2MtMTNiMGU2M2FjYzM5IiwiaWRlbnRpZmllciI6IjY5MTAwMFpFUFEiLCJnaXZlbl9uYW1lIjoiWXVlcWluIiwiZmFtaWx5X25hbWUiOiJMaSIsIm5hbWUiOiJZdWVxaW4gTGkiLCJlbWFpbCI6ImFteWxlZS5seXFAZ21haWwuY29tIiwic3ViIjoiYW15bGVlLmx5cUBnbWFpbC5jb20iLCJhdXRobiI6eyJzdWIiOiJhbXlsZWUubHlxQGdtYWlsLmNvbSIsImlhbV9pZCI6IklCTWlkLTY5MTAwMFpFUFEiLCJuYW1lIjoiWXVlcWluIExpIiwiZ2l2ZW5fbmFtZSI6Ill1ZXFpbiIsImZhbWlseV9uYW1lIjoiTGkiLCJlbWFpbCI6ImFteWxlZS5seXFAZ21haWwuY29tIn0sImFjY291bnQiOnsidmFsaWQiOnRydWUsImJzcyI6IjViNmYzZDcwMWYwZjRlZGRhODZmOTc2MTg3NzM4NTI3IiwiaW1zX3VzZXJfaWQiOiIxMzk0MzQzMyIsImZyb3plbiI6dHJ1ZSwiaW1zIjoiMjk5OTU5NiJ9LCJtZmEiOnsiaW1zIjp0cnVlfSwiaWF0IjoxNzUxMTk0MzgxLCJleHAiOjE3NTExOTc5ODEsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.ca4L0KWmi-GWMeeOo-D7ADIJpbOY_ayYf2catIta-BSOIfyVKDG-tOh91gAsfCS4sUnt1UGjyIhluhhqTDXt-plnOjkpEmSB-a-TJIRinK1g0xaDFTuyBm9WtiB2GpGzw-jk6VrteMSPQ8NaHjhcTvtp7Ic2cd8H2Nbol53CDzOE6nyvGTmOdRL7dacZNR3n97VH4nREfkB_hXJGCstf4e0q1ZfiJQIGpK36KOd9S2kQwsfPPnSfnY7CH8_BESWjhgIn8lCHDxi2qgm-Jc7w_mVP_4IGings7u_iJ9V_FM0ALeFyhl9yDyVlePWaMwlldYP2F4ayQkKcRX0P_tjF8A")
 ENDPOINT = os.getenv("GRANITE_CHAT_URL", "https://us-south.ml.cloud.ibm.com/ml/v1/text/chat?version=2023-05-29")
-PROJECT_ID = os.getenv("WATSONX_PROJECT_ID", "7d920a6b-64e4-454b-831f-c1d4d07d8f8c")
+PROJECT_ID = os.getenv("WATSONX_PROJECT_ID", "0d2579c2-c1e9-4cdf-8a4d-b1b85f3fafff")
 MODEL_ID = "ibm/granite-3-3-8b-instruct"
-
-# def call_granite(product_name, delivery_address, quantity):
-#     explanation = "lalala"
-#     product_price = 100.0  # Example price for the product
-#     shipment_price = 20.0  # Example shipment price
-#     total_cost = product_price + shipment_price
-#     return explanation, product_price, shipment_price, total_cost
 
 def call_granite(product_name, delivery_address, quantity):
     try:
         df = pd.read_csv("data.csv", sep="\t")
         df.columns = df.columns.str.strip()
         context = df.to_string(index=False)
-        # matched_rows = df[df["business_name"].str.contains(business_name, case=False, na=False)]
-        # if matched_rows.empty:
-        #     context = "No matching data found for this company."
-        # else:
-        #     context = matched_rows.head(5).to_string(index=False)
     except Exception as e:
         context = f"[Failed to load CSV: {str(e)}]"
-
 
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
         "Authorization": f"Bearer {API_KEY}"
     }
-
-    # body = {
-    #     "project_id": PROJECT_ID,
-    #     "model_id": MODEL_ID,
-    #     "messages": [
-    #         {
-    #             "role": "user",
-    #             "content": [{"type": "text", "text": prompt}]
-    #         }
-    #     ],
-    #     "temperature": 0.7,
-    #     "max_tokens": 1000,
-    #     "top_p": 1,
-    #     "frequency_penalty": 0,
-    #     "presence_penalty": 0
-    # }
 
     body = {
             "project_id": f"{PROJECT_ID}",
