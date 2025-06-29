@@ -15,8 +15,7 @@ Two of our teammates have EPC project experience in engineering industry. They o
 ## 1. Install the dependencies.
 pip install -r requirements.txt
 ## 2. Run the app
-streamlit run app.py <br>
-✅ Make sure you have Python 3.8+ and pip installed.
+streamlit run app.py <br>(Python 3.8+ and pip required)
 
 
 # Security Notice
