@@ -44,9 +44,14 @@ if submitted:
     st.session_state.chat_history.append(("User", user_msg))
 
     # Get response
-    explanation, product_price, shipment_price, total_cost = call_granite(
+    res = call_granite(
         product_name, delivery_address, quantity
     )
+    if len(res) == 4:
+        explanation, product_price, shipment_price, total_cost = res
+    else:
+        explanation = res[0]
+        product_price = shipment_price = total_cost = 0.0
 
     # Create table as dict (for consistent rendering later)
     table_data = {
@@ -57,6 +62,9 @@ if submitted:
         "Product Price": f"${product_price:.2f}",
         "Shipment Price": f"${shipment_price:.2f}",
         "Total Cost": f"${total_cost:.2f}"
+        # "Product Price": -1,
+        # "Shipment Price": -1,
+        # "Total Cost": -1
     }
 
     # Save to chat history
