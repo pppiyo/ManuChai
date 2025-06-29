@@ -1,4 +1,4 @@
-order_id	business_name	product_name	order_date	order_status	shipment_method	compent_name	price
+order_id	business_name	product_name	order_date	order_status	shipment_method	component_name	price
 001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Flange	250
 001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Shell 	300
 001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Drain Pipe	200

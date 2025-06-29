@@ -1,17 +1,11 @@
 import streamlit as st
 import json
 from granite_api import call_granite
+import pandas as pd
 
 # Set page config
 st.set_page_config(page_title="ManuChai", page_icon="🤖")
 st.title("🤖 ManuChai (IBM Granite Chatbot)")
-
-# FAQs
-faq_options = [
-    "What are your opening hours?",
-    "Do you offer delivery?",
-    "How much does shipping cost?"
-]
 
 # Ask for company name at the beginning
 if "company" not in st.session_state:
@@ -25,6 +19,19 @@ if st.session_state.company is None:
         st.rerun()
     st.stop()
 
+# History orders
+orders_options = []
+
+df = pd.read_csv("data.csv", sep="\t")
+df.columns = df.columns.str.strip()
+matched_rows = df[df["business_name"].str.contains(st.session_state.company, case=False, na=False)]
+if matched_rows.empty:
+    orders_options = [f"No matching data found for {st.session_state.company}."]
+else:
+    for index, row in matched_rows.iterrows():
+        order_info = f"{row['product_name']} - {row['component_name']} - {row['order_date']} - {row['order_status']}"
+        orders_options.append(order_info)
+    
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -35,7 +42,7 @@ if st.button("🗑️ Clear Conversation"):
 
 # Chat input form
 with st.form(key="chat_form"):
-    selected_faq = st.selectbox("📋 Choose a frequently asked question:", [""] + faq_options, key="faq")
+    selected_faq = st.selectbox("📋 History orders query:", [""] + orders_options, key="faq")
     user_input = st.text_input("💬 Or ask your own question:", key="custom")
     submitted = st.form_submit_button("🚀 Send")
 
@@ -45,7 +52,7 @@ if submitted:
     if user_input.strip():
         final_input = user_input.strip()
     elif selected_faq:
-        final_input = selected_faq
+        final_input = selected_faq + " Please provide more details for this order."
 
 # Process input
 if final_input:
