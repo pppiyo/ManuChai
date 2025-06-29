@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+import json
+import os
+from datetime import datetime
 from granite_api import call_granite
 
 # Set page config
@@ -60,6 +63,10 @@ if submitted:
     st.session_state.chat_history.append(("Bot", explanation))
     st.session_state.chat_history.append(("Table", table_data))
 
+    # Save to order history JSON file
+    if save_to_order_history(table_data):
+        st.success("✅ Quote data saved to order history!")
+
 # Display conversation
 for speaker, msg in st.session_state.chat_history:
     if speaker == "User":
@@ -69,3 +76,52 @@ for speaker, msg in st.session_state.chat_history:
     elif speaker == "Table":
         df = pd.DataFrame([msg])
         st.table(df)
+
+def save_to_order_history(data):
+    """
+    Save JSON data to order_history.json file by appending to existing array.
+    
+    Args:
+        data: The data to save (dict, list, or any JSON-serializable object)
+    
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    filename = "order_history.json"
+    
+    try:
+        # Read existing data if file exists
+        existing_data = []
+        if os.path.exists(filename):
+            try:
+                with open(filename, 'r', encoding='utf-8') as f:
+                    file_content = f.read().strip()
+                    if file_content:  # Check if file is not empty
+                        existing_data = json.load(f)
+                    else:
+                        existing_data = []
+            except json.JSONDecodeError:
+                # If file is corrupted, start fresh
+                existing_data = []
+        
+        # Add timestamp to the data
+        data_with_timestamp = {
+            "timestamp": datetime.now().isoformat(),
+            "data": data
+        }
+        
+        # Append new data to existing array
+        existing_data.append(data_with_timestamp)
+        
+        # Write back to file
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(existing_data, f, indent=2, ensure_ascii=False)
+        
+        return True
+        
+    except Exception as e:
+        st.error(f"Error saving to order history: {str(e)}")
+        return False
+
+
+                
