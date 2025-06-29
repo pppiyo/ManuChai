@@ -7,68 +7,75 @@ ENDPOINT = os.getenv("GRANITE_CHAT_URL", "https://us-south.ml.cloud.ibm.com/ml/v
 PROJECT_ID = os.getenv("WATSONX_PROJECT_ID", "7d920a6b-64e4-454b-831f-c1d4d07d8f8c")
 MODEL_ID = "ibm/granite-3-3-8b-instruct"
 
-def call_granite(business_name: str, user_question: str) -> str:
-    try:
-        df = pd.read_csv("data.csv", sep="\t")
-        df.columns = df.columns.str.strip()
-        context = df.to_string(index=False)
-        # matched_rows = df[df["business_name"].str.contains(business_name, case=False, na=False)]
-        # if matched_rows.empty:
-        #     context = "No matching data found for this company."
-        # else:
-        #     context = matched_rows.head(5).to_string(index=False)
-    except Exception as e:
-        context = f"[Failed to load CSV: {str(e)}]"
+def call_granite(product_name, delivery_address, quantity):
+    explanation = "lalala"
+    product_price = 100.0  # Example price for the product
+    shipment_price = 20.0  # Example shipment price
+    total_cost = product_price + shipment_price
+    return explanation, product_price, shipment_price, total_cost
 
-    prompt = f"""
-            You are a business assistant. Use the following company and data to help answer the question.
+# def call_granite(business_name: str, user_question: str) -> str:
+    # try:
+    #     df = pd.read_csv("data.csv", sep="\t")
+    #     df.columns = df.columns.str.strip()
+    #     context = df.to_string(index=False)
+    #     # matched_rows = df[df["business_name"].str.contains(business_name, case=False, na=False)]
+    #     # if matched_rows.empty:
+    #     #     context = "No matching data found for this company."
+    #     # else:
+    #     #     context = matched_rows.head(5).to_string(index=False)
+    # except Exception as e:
+    #     context = f"[Failed to load CSV: {str(e)}]"
 
-            Company Name: {business_name}
-            data: {context}
+    # prompt = f"""
+    #         You are a business assistant. Use the following company and data to help answer the question.
 
-            Please answer in this JSON format:
-            {{
-            "answer": "...",
-            "suggestion": "..."
-            }}
+    #         Company Name: {business_name}
+    #         data: {context}
 
-            Customer question: {user_question}
-            """
-    print(f"[Granite API request]: {prompt}")
+    #         Please answer in this JSON format:
+    #         {{
+    #         "answer": "...",
+    #         "suggestion": "..."
+    #         }}
 
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}"
-    }
+    #         Customer question: {user_question}
+    #         """
+    # print(f"[Granite API request]: {prompt}")
 
-    body = {
-        "project_id": PROJECT_ID,
-        "model_id": MODEL_ID,
-        "messages": [
-            {
-                "role": "user",
-                "content": [{"type": "text", "text": prompt}]
-            }
-        ],
-        "temperature": 0.7,
-        "max_tokens": 1000,
-        "top_p": 1,
-        "frequency_penalty": 0,
-        "presence_penalty": 0
-    }
+    # headers = {
+    #     "Accept": "application/json",
+    #     "Content-Type": "application/json",
+    #     "Authorization": f"Bearer {API_KEY}"
+    # }
 
-    try:
-        response = requests.post(ENDPOINT, headers=headers, json=body, timeout=10)
+    # body = {
+    #     "project_id": PROJECT_ID,
+    #     "model_id": MODEL_ID,
+    #     "messages": [
+    #         {
+    #             "role": "user",
+    #             "content": [{"type": "text", "text": prompt}]
+    #         }
+    #     ],
+    #     "temperature": 0.7,
+    #     "max_tokens": 1000,
+    #     "top_p": 1,
+    #     "frequency_penalty": 0,
+    #     "presence_penalty": 0
+    # }
 
-        if response.status_code != 200:
-            print(f"[Granite API error {response.status_code}]: {response.text}")
-            return "[Error from Granite API]"
+    # try:
+    #     response = requests.post(ENDPOINT, headers=headers, json=body, timeout=10)
 
-        data = response.json()
-        print(f"[Granite API response]: {data}")
-        return data.get("choices", [{}])[0].get("message", {}).get("content", "[No response]")
+    #     if response.status_code != 200:
+    #         print(f"[Granite API error {response.status_code}]: {response.text}")
+    #         return "[Error from Granite API]"
 
-    except Exception as e:
-        print(f"[Exception]: {e}")
-        return "[Failed to connect to Granite]"
+    #     data = response.json()
+    #     print(f"[Granite API response]: {data}")
+    #     return data.get("choices", [{}])[0].get("message", {}).get("content", "[No response]")
+
+    # except Exception as e:
+    #     print(f"[Exception]: {e}")
+    #     return "[Failed to connect to Granite]"

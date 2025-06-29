@@ -1,7 +1,6 @@
 import streamlit as st
-import json
-from granite_api import call_granite
 import pandas as pd
+from granite_api import call_granite
 
 # Set page config
 st.set_page_config(page_title="ManuChai", page_icon="🤖")
@@ -19,60 +18,54 @@ if st.session_state.company is None:
         st.rerun()
     st.stop()
 
-# History orders
-orders_options = []
-
-df = pd.read_csv("data.csv", sep="\t")
-df.columns = df.columns.str.strip()
-matched_rows = df[df["business_name"].str.contains(st.session_state.company, case=False, na=False)]
-if matched_rows.empty:
-    orders_options = [f"No matching data found for {st.session_state.company}."]
-else:
-    for index, row in matched_rows.iterrows():
-        order_info = f"{row['product_name']} - {row['component_name']} - {row['order_date']} - {row['order_status']}"
-        orders_options.append(order_info)
-    
-# Initialize session state
+# Initialize chat history
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Clear conversation button
+# Clear conversation
 if st.button("🗑️ Clear Conversation"):
     st.session_state.chat_history = []
 
-# Chat input form
-with st.form(key="chat_form"):
-    selected_faq = st.selectbox("📋 History orders query:", [""] + orders_options, key="faq")
-    user_input = st.text_input("💬 Or ask your own question:", key="custom")
+# Input form
+with st.form(key="quote_form"):
+    st.subheader("📦 Request a Product Quote")
+    product_name = st.text_input("Product Name")
+    delivery_address = st.text_input("Delivery Address")
+    quantity = st.number_input("Quantity", min_value=1, step=1)
     submitted = st.form_submit_button("🚀 Send")
 
-# Determine input source
-final_input = None
+# On submit
 if submitted:
-    if user_input.strip():
-        final_input = user_input.strip()
-    elif selected_faq:
-        final_input = selected_faq + " Please provide more details for this order."
+    # Store input
+    user_msg = f"Product: {product_name}, Address: {delivery_address}, Quantity: {quantity}"
+    st.session_state.chat_history.append(("User", user_msg))
 
-# Process input
-if final_input:
-    bot_response = call_granite(st.session_state.company, final_input)
-    st.session_state.chat_history.append(("User", final_input))
+    # Get response
+    explanation, product_price, shipment_price, total_cost = call_granite(
+        product_name, delivery_address, quantity
+    )
 
-    try:
-        response_data = json.loads(bot_response)
-        answer = response_data.get("answer", "[No answer]")
-        suggestion = response_data.get("suggestion", "[No suggestion]")
-        st.session_state.chat_history.append(("Bot", answer))
-        st.session_state.chat_history.append(("Bot-suggestion", suggestion))
-    except json.JSONDecodeError:
-        st.session_state.chat_history.append(("Bot", bot_response))
+    # Create table as dict (for consistent rendering later)
+    table_data = {
+        "Company": st.session_state.company,
+        "Product": product_name,
+        "Delivery Address": delivery_address,
+        "Quantity": quantity,
+        "Product Price": f"${product_price:.2f}",
+        "Shipment Price": f"${shipment_price:.2f}",
+        "Total Cost": f"${total_cost:.2f}"
+    }
+
+    # Save to chat history
+    st.session_state.chat_history.append(("Bot", explanation))
+    st.session_state.chat_history.append(("Table", table_data))
 
 # Display conversation
 for speaker, msg in st.session_state.chat_history:
     if speaker == "User":
         st.markdown(f"**🧑 You:** {msg}")
     elif speaker == "Bot":
-        st.markdown(f"**🤖 Answer:** {msg}")
-    elif speaker == "Bot-suggestion":
-        st.info(f"💡 Suggestion: {msg}")
+        st.markdown(f"**🤖 Explanation:** {msg}")
+    elif speaker == "Table":
+        df = pd.DataFrame([msg])
+        st.table(df)
