@@ -3,7 +3,7 @@ import os
 import requests
 import pandas as pd
 
-API_KEY = os.getenv("IBM_CLOUD_APIKEY", "eyJraWQiOiIyMDE5MDcyNCIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJJQk1pZC02OTEwMDBaRVBRIiwiaWQiOiJJQk1pZC02OTEwMDBaRVBRIiwicmVhbG1pZCI6IklCTWlkIiwianRpIjoiMzIyNzgwYjEtYjAxMi00ODJlLWIxY2MtMTNiMGU2M2FjYzM5IiwiaWRlbnRpZmllciI6IjY5MTAwMFpFUFEiLCJnaXZlbl9uYW1lIjoiWXVlcWluIiwiZmFtaWx5X25hbWUiOiJMaSIsIm5hbWUiOiJZdWVxaW4gTGkiLCJlbWFpbCI6ImFteWxlZS5seXFAZ21haWwuY29tIiwic3ViIjoiYW15bGVlLmx5cUBnbWFpbC5jb20iLCJhdXRobiI6eyJzdWIiOiJhbXlsZWUubHlxQGdtYWlsLmNvbSIsImlhbV9pZCI6IklCTWlkLTY5MTAwMFpFUFEiLCJuYW1lIjoiWXVlcWluIExpIiwiZ2l2ZW5fbmFtZSI6Ill1ZXFpbiIsImZhbWlseV9uYW1lIjoiTGkiLCJlbWFpbCI6ImFteWxlZS5seXFAZ21haWwuY29tIn0sImFjY291bnQiOnsidmFsaWQiOnRydWUsImJzcyI6IjViNmYzZDcwMWYwZjRlZGRhODZmOTc2MTg3NzM4NTI3IiwiaW1zX3VzZXJfaWQiOiIxMzk0MzQzMyIsImZyb3plbiI6dHJ1ZSwiaW1zIjoiMjk5OTU5NiJ9LCJtZmEiOnsiaW1zIjp0cnVlfSwiaWF0IjoxNzUxMTk0MzgxLCJleHAiOjE3NTExOTc5ODEsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.ca4L0KWmi-GWMeeOo-D7ADIJpbOY_ayYf2catIta-BSOIfyVKDG-tOh91gAsfCS4sUnt1UGjyIhluhhqTDXt-plnOjkpEmSB-a-TJIRinK1g0xaDFTuyBm9WtiB2GpGzw-jk6VrteMSPQ8NaHjhcTvtp7Ic2cd8H2Nbol53CDzOE6nyvGTmOdRL7dacZNR3n97VH4nREfkB_hXJGCstf4e0q1ZfiJQIGpK36KOd9S2kQwsfPPnSfnY7CH8_BESWjhgIn8lCHDxi2qgm-Jc7w_mVP_4IGings7u_iJ9V_FM0ALeFyhl9yDyVlePWaMwlldYP2F4ayQkKcRX0P_tjF8A")
+API_KEY = os.getenv("IBM_CLOUD_APIKEY", "eyJraWQiOiIyMDE5MDcyNCIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJJQk1pZC02OTEwMDBaRVBRIiwiaWQiOiJJQk1pZC02OTEwMDBaRVBRIiwicmVhbG1pZCI6IklCTWlkIiwianRpIjoiOTRhNTI0ODUtNDljZS00NGExLWIzNTEtNDIwMjI0MTI2ZDczIiwiaWRlbnRpZmllciI6IjY5MTAwMFpFUFEiLCJnaXZlbl9uYW1lIjoiWXVlcWluIiwiZmFtaWx5X25hbWUiOiJMaSIsIm5hbWUiOiJZdWVxaW4gTGkiLCJlbWFpbCI6ImFteWxlZS5seXFAZ21haWwuY29tIiwic3ViIjoiYW15bGVlLmx5cUBnbWFpbC5jb20iLCJhdXRobiI6eyJzdWIiOiJhbXlsZWUubHlxQGdtYWlsLmNvbSIsImlhbV9pZCI6IklCTWlkLTY5MTAwMFpFUFEiLCJuYW1lIjoiWXVlcWluIExpIiwiZ2l2ZW5fbmFtZSI6Ill1ZXFpbiIsImZhbWlseV9uYW1lIjoiTGkiLCJlbWFpbCI6ImFteWxlZS5seXFAZ21haWwuY29tIn0sImFjY291bnQiOnsidmFsaWQiOnRydWUsImJzcyI6IjViNmYzZDcwMWYwZjRlZGRhODZmOTc2MTg3NzM4NTI3IiwiaW1zX3VzZXJfaWQiOiIxMzk0MzQzMyIsImZyb3plbiI6dHJ1ZSwiaW1zIjoiMjk5OTU5NiJ9LCJtZmEiOnsiaW1zIjp0cnVlfSwiaWF0IjoxNzUxMTk4MjIzLCJleHAiOjE3NTEyMDE4MjMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.eSXfhKcu-UEV5RAu-QbjFbRhpmtBHz5PSALCCatoO57sVdQ0LntARFVVXzVlgrvu3b7rJZBXx3094W8_Iz4toDDVcBXKEdcV50lfKQfYZIxOAuDEmHEn2czUKaF_6wSQjcO1HKv9c4chAvVm46xWQZO2WUnrk3qU9iu7m91nj1uMJWKKzRvmghX-cWAQPlr363iWII9m_gNvrl7aqrkp_PhKttf1VHTWqaDsWucoosJ_IxmGoE1wyQemw3ZU_KWYPvYT1JGdHnIYWWpiP8Ki0cb8k3nrVsCbNnNc0XSEmAEEFdRlQV5-qIEknYVpnP5uCyailu8JHGS0gZpq7JfsnA")
 ENDPOINT = os.getenv("GRANITE_CHAT_URL", "https://us-south.ml.cloud.ibm.com/ml/v1/text/chat?version=2023-05-29")
 PROJECT_ID = os.getenv("WATSONX_PROJECT_ID", "0d2579c2-c1e9-4cdf-8a4d-b1b85f3fafff")
 MODEL_ID = "ibm/granite-3-3-8b-instruct"
@@ -124,3 +124,76 @@ def call_granite(product_name, delivery_address, quantity):
     except Exception as e:
         print(f"[Exception]: {e}")
         return "[Failed to connect to Granite]"
+
+def call_granite_chat(user_message, company_name=None):
+    """
+    Call Granite LLM for general chat interactions.
+    
+    Args:
+        user_message: The user's message
+        company_name: Optional company name for context
+    
+    Returns:
+        str: The bot's response
+    """
+    try:
+        # Load context data if available
+        try:
+            df = pd.read_csv("data.csv", sep="\t")
+            df.columns = df.columns.str.strip()
+            context = df.to_string(index=False)
+        except Exception as e:
+            context = f"[No reference data available: {str(e)}]"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {API_KEY}"
+        }
+
+        # Create a more general prompt for chat
+        prompt = f"""
+        <|system|>
+        You are ManuChai, a helpful AI assistant for manufacturing and logistics companies. 
+        You provide expert advice on manufacturing processes, logistics, cost estimation, 
+        and general business questions. Be professional, helpful, and concise in your responses.
+        
+        {f"Company Context: {company_name}" if company_name else ""}
+        
+        <|user|>
+        {user_message}
+        """
+
+        body = {
+            "project_id": f"{PROJECT_ID}",
+            "model_id": "ibm/granite-3-3-8b-instruct",
+            "messages": [{
+                "role": "user",
+                "content": [{
+                    "type": "text",
+                    "text": prompt
+                }]
+            }],
+            "frequency_penalty": 0,
+            "max_tokens": 2000,
+            "presence_penalty": 0,
+            "temperature": 0.7,
+            "top_p": 1
+        }
+
+        response = requests.post(ENDPOINT, headers=headers, json=body, timeout=30)
+
+        if response.status_code != 200:
+            print(f"[Granite API error {response.status_code}]: {response.text}")
+            return "I apologize, but I'm having trouble connecting to my knowledge base right now. Please try again later."
+
+        data = response.json()
+        print(f"[Granite Chat API response]: {data}")
+        
+        # Extract the assistant's reply content from the response
+        content = data["choices"][0]["message"]["content"]
+        return content
+
+    except Exception as e:
+        print(f"[Chat Exception]: {e}")
+        return "I apologize, but I encountered an error while processing your request. Please try again."
