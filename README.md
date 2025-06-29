@@ -1,7 +1,7 @@
 # About
 A business AI chatbot built for instant, intelligent manufacturing quotes and more, using IBM Granite model via watsonx.ai.
 
-Created from scratch in just 1.5 days for the IBM Hackathon in June 2025 by a team of four women engineers and close friends.
+Created from scratch in just 1 days for the IBM Hackathon in June 2025 by a team of four women engineers and close friends.
 
 
 # Video Demo
