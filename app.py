@@ -86,47 +86,54 @@ with tab1:
     if st.button("🗑️ Clear Chat History", key="clear_quote_history"):
         st.session_state.chat_history = []
 
-    # Input form
-    with st.form(key="quote_form"):
-        product_name = st.text_input("Product Name")
-        delivery_address = st.text_input("Delivery Address")
-        quantity = st.number_input("Quantity", min_value=1, step=1)
-        submitted = st.form_submit_button("🚀 Send")
+    # Input fields (outside form to remove "press enter to submit" prompt)
+    product_name = st.text_input("Product Name *", key="product_name_input", placeholder="Enter product name")
+    delivery_address = st.text_input("Delivery Address *", key="delivery_address_input", placeholder="Enter delivery address")
+    quantity = st.number_input("Quantity", min_value=1, step=1, key="quantity_input")
+    
+    # Submit button
+    submitted = st.button("🚀 Send Quote", key="submit_quote", use_container_width=True)
 
     # On submit
     if submitted:
-        # Store input
-        user_msg = f"Product: {product_name}, Address: {delivery_address}, Quantity: {quantity}"
-        st.session_state.chat_history.append(("User", user_msg))
-
-        # Get response
-        res = call_granite(
-            product_name, delivery_address, quantity
-        )
-        if len(res) == 4:
-            explanation, product_price, shipment_price, total_cost = res
+        # Validate required fields
+        if not product_name.strip():
+            st.error("❌ Product Name is required!")
+        elif not delivery_address.strip():
+            st.error("❌ Delivery Address is required!")
         else:
-            explanation = res[0]
-            product_price = shipment_price = total_cost = 0.0
+            # Store input
+            user_msg = f"Product: {product_name}, Address: {delivery_address}, Quantity: {quantity}"
+            st.session_state.chat_history.append(("User", user_msg))
 
-        # Create table as dict (for consistent rendering later)
-        table_data = {
-            "Company": st.session_state.company,
-            "Product": product_name,
-            "Delivery Address": delivery_address,
-            "Quantity": quantity,
-            "Product Price": f"${product_price:.2f}",
-            "Shipment Price": f"${shipment_price:.2f}",
-            "Total Cost": f"${total_cost:.2f}"
-        }
+            # Get response
+            res = call_granite(
+                product_name, delivery_address, quantity
+            )
+            if len(res) == 4:
+                explanation, product_price, shipment_price, total_cost = res
+            else:
+                explanation = res[0]
+                product_price = shipment_price = total_cost = 0.0
 
-        # Save to chat history
-        st.session_state.chat_history.append(("Bot", explanation))
-        st.session_state.chat_history.append(("Table", table_data))
+            # Create table as dict (for consistent rendering later)
+            table_data = {
+                "Company": st.session_state.company,
+                "Product": product_name,
+                "Delivery Address": delivery_address,
+                "Quantity": quantity,
+                "Product Price": f"${product_price:.2f}",
+                "Shipment Price": f"${shipment_price:.2f}",
+                "Total Cost": f"${total_cost:.2f}"
+            }
 
-        # Save to order history JSON file
-        if save_to_order_history(table_data):
-            st.success("✅ Quote data saved to order history!")
+            # Save to chat history
+            st.session_state.chat_history.append(("Bot", explanation))
+            st.session_state.chat_history.append(("Table", table_data))
+
+            # Save to order history JSON file
+            if save_to_order_history(table_data):
+                st.success("✅ Quote data saved to order history!")
 
     # Display conversation
     for speaker, msg in st.session_state.chat_history:
