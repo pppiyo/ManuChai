@@ -38,7 +38,7 @@ def call_granite(prompt: str) -> str:
 
         data = response.json()
         print(f"[Granite API response]: {data}")
-        return data.get("generated_text", "[No response]")
+        return data.get("choices", [{}])[0].get("message", {}).get("content", "[No response]")
 
     except Exception as e:
         print(f"[Exception]: {e}")
