@@ -24,7 +24,7 @@ if st.session_state.company is None:
         st.session_state.company = company
         st.rerun()
     st.stop()
-    
+
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -49,16 +49,7 @@ if submitted:
 
 # Process input
 if final_input:
-    prompt = f"""
-    You are a business assistant. Please answer in this JSON format:
-    {{
-      "answer": "...",
-      "suggestion": "..."
-    }}
-
-    Customer question: {final_input}
-    """
-    bot_response = call_granite(prompt)
+    bot_response = call_granite(st.session_state.company, final_input)
     st.session_state.chat_history.append(("User", final_input))
 
     try:

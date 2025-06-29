@@ -1,0 +1,14 @@
+order_id	business_name	product_name	order_date	order_status	shipment_method	compent_name	price
+001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Flange	250
+001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Shell 	300
+001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Drain Pipe	200
+001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Nozzle 	500
+001	ABC Energy Group	Tank	6/17/2025	quoting	FCA(Free Carrier) -- Seller delivers goods to the carrier at a named place	Head	150
+002	AAA Chemical Group 	Air Cooler 	1/4/2025	dispute	FOB(Free Onboard)	Baffle 	200
+002	AAA Chemical Group 	Air Cooler 	1/4/2025	dispute	FOB(Free Onboard)	Manhole 	300
+002	AAA Chemical Group 	Air Cooler 	1/4/2025	dispute	FOB(Free Onboard)	Vent 	400
+002	AAA Chemical Group 	Air Cooler 	1/4/2025	dispute	FOB(Free Onboard)	Saddle 	500
+003	SS Clean Energy 	Pump 	3/20/2024	maintain		Nozzle 	500
+003	SS Clean Energy 	Pump 	3/20/2024	maintain		Head	150
+003	SS Clean Energy 	Pump 	3/20/2024	maintain		Baffle 	200
+003	SS Clean Energy 	Pump 	3/20/2024	maintain		Manhole 	300
