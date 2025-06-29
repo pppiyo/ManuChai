@@ -13,6 +13,18 @@ faq_options = [
     "How much does shipping cost?"
 ]
 
+# Ask for company name at the beginning
+if "company" not in st.session_state:
+    st.session_state.company = None
+
+if st.session_state.company is None:
+    st.title("🏢 Welcome to ManuChai")
+    company = st.text_input("Please enter your company name:")
+    if company:
+        st.session_state.company = company
+        st.rerun()
+    st.stop()
+    
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
